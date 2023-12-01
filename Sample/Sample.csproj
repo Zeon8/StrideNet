@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <EmitCompilerGeneratedFiles>True</EmitCompilerGeneratedFiles>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MemoryPack" Version="1.10.0" />
+    <PackageReference Include="Stride.Engine" Version="4.2.0.2043" />
+    <PackageReference Include="Stride.Video" Version="4.2.0.2043" />
+    <PackageReference Include="Stride.Physics" Version="4.2.0.2043" />
+    <PackageReference Include="Stride.Navigation" Version="4.2.0.2043" />
+    <PackageReference Include="Stride.Particles" Version="4.2.0.2043" />
+    <PackageReference Include="Stride.UI" Version="4.2.0.2043" />
+    <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.2.0.2043" IncludeAssets="build;buildTransitive" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StrideNet\StrideNet.csproj" />
+    <ProjectReference Include="..\StrideNet.SourceGenerator\StrideNet.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+</Project>

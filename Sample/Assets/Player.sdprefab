@@ -1,0 +1,29 @@
+!PrefabAsset
+Id: 8de76625-8c33-46c2-960e-ac3d45b5993a
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+Hierarchy:
+    RootParts:
+        - ref!! 58de7909-6447-4c9c-bd1f-8be53a466fce
+    Parts:
+        -   Entity:
+                Id: 58de7909-6447-4c9c-bd1f-8be53a466fce
+                Name: Player
+                Components:
+                    804689bb99ae1d7a1c65c1aa0d9477bb: !TransformComponent
+                        Id: 6293f07e-37c6-4968-acd2-349802fe239c
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 0.5, Z: 0.5}
+                        Children: {}
+                    bb982a79be8a8277941f60fd76362993: !SpriteComponent
+                        Id: ec4c5a7e-a028-4f88-9013-f6a381278db8
+                        SpriteProvider: !SpriteFromSheet
+                            Sheet: 60fab9e5-1fd3-457d-a499-1906756e080d:SpriteSheet
+                        Color: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
+                    e2f2017552432514acb0d1b2bb254ad3: !Sample.Player,Sample
+                        Id: 947d681b-6cc8-4af9-8075-eee32a8580f4
+                        Speed: 5.0
+                        Interpolation: 0.5
+                    8f285bb759214ef6f6d56d84ce544783: !StrideNet.NetworkEntity,StrideNet
+                        Id: bdfabfa2-31ee-43a4-98c1-6dede1e13cb9
