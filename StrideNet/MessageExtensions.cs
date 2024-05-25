@@ -8,7 +8,7 @@ namespace StrideNet
 {
     public static class MessageExtensions
     {
-        private static readonly Dictionary<Type, Func<Message, object>> s_getValue = new()
+        private static readonly Dictionary<Type, Func<Message, object>> s_getValueDelegates = new()
         {
             { typeof(bool), message => message.GetBool() },
             { typeof(byte), message => message.GetByte() },
@@ -50,7 +50,7 @@ namespace StrideNet
 
         public static T Get<T>(this Message message)
         {
-            if (s_getValue.TryGetValue(typeof(T), out Func<Message, object>? getValue))
+            if (s_getValueDelegates.TryGetValue(typeof(T), out Func<Message, object>? getValue))
                 return (T)getValue(message);
 
             return MemoryPackSerializer.Deserialize<T>(message.GetBytes())

@@ -25,7 +25,7 @@ namespace StrideNet
         public bool TryGetRpc(RpcDelegate rpcDelegate, out INetworkRpc? rpc, out int rpcId)
         {
             rpc = GetRpc(rpcDelegate, out rpcId);
-            return rpc is null;
+            return rpc is not null;
         }
 
         public INetworkRpc? GetRpc(Message message)

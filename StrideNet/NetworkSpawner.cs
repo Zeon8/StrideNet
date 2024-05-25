@@ -109,8 +109,7 @@ namespace StrideNet
 				return;
 			}
 
-			Prefab prefab = SpawnablePrefabs[prefabId];
-			if (prefab is null)
+			if (SpawnablePrefabs[prefabId] is not Prefab prefab)
 			{
 				Log.Error("Cannot spawn entity, because prefab is empty. Make sure that elements of SpawnableEntities is asigned.");
 				return;

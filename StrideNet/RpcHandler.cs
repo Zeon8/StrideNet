@@ -70,8 +70,7 @@ namespace StrideNet
 
         public void RpcRecieved(ushort clientId, Message message)
         {
-            NetworkScript? script = GetScript(message);
-            if(script is not null)
+            if(GetScript(message) is NetworkScript script)
                 HandleRpcWithAuthority(script, clientId, message);
         }
 

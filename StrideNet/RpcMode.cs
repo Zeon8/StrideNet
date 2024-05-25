@@ -17,7 +17,7 @@ namespace StrideNet
         AnyPeer,
 
         /// <summary>
-        /// Only peer that has authority over this entity can call the RPC on the server.
+        /// Only peer that owns entity can call the RPC on the server.
         /// </summary>
         Authority,
 

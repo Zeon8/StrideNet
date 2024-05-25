@@ -110,13 +110,13 @@ namespace StrideNet
         /// <summary>
         /// Intantiates client and attempts to connect to server.
         /// </summary>
-        public void StartClient()
+        public void StartClient(Message? messsage = null)
         {
             var client = new Client();
             _peer = client;
 
             client.Connected += Client_Connected;
-            client.Connect(Adress + ':' + Port, 5, 0, null, false);
+            client.Connect(Adress + ':' + Port, 5, 0, messsage, false);
             client.MessageReceived += Client_MessageReceived;
         }
 
@@ -178,7 +178,7 @@ namespace StrideNet
             }
         }
 
-        internal void AddServerHandler(ushort id, Server.MessageHandler handler)
+        public void AddServerHandler(ushort id, Server.MessageHandler handler)
         {
             if (_serverMessageHandlers.ContainsKey(id))
                 throw new ArgumentException("Cannot add handler, because handler with same id was already added.");

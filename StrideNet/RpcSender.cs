@@ -33,12 +33,12 @@ namespace StrideNet
             return message;
         }
 
-        public void CreateRpc(RpcDelegate rpcDelegate, out INetworkRpc rpc, out Message message)
+        public void CreateRpc(RpcDelegate rpcDelegate, out INetworkRpc? rpc, out Message message)
         {
-            if (_registry.TryGetRpc(rpcDelegate, out rpc!, out int rpcId))
+            if (!_registry.TryGetRpc(rpcDelegate, out rpc, out int rpcId))
 				throw new ArgumentException("Cannot create unregistered RPC.");
 
-			message = CreateMessage(rpcId, rpc.SendMode);
+			message = CreateMessage(rpcId, rpc!.SendMode);
         }
 
         public void SendRpc(INetworkRpc rpc, Message message)

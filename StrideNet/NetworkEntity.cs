@@ -28,6 +28,7 @@ namespace StrideNet
 
         /// <summary>
         /// Whether or not the peer has authority over this entity.
+        /// Server has authority over all entities.
         /// </summary>
         public bool HasAuthority => IsOwner || NetworkManager.IsServer;
     }
