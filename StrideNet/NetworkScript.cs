@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace StrideNet
 {
     /// <summary>
-    /// Script that allows to call RPCs and syncronize varibles over network.
+    /// Script that allows to call RPCs and syncronize variables over network.
     /// </summary>
     public abstract class NetworkScript : SyncScript
     {
@@ -23,36 +23,31 @@ namespace StrideNet
         public bool IsClient => NetworkManager.IsClient;
         public bool IsHost => NetworkManager.IsHost;
 
+        public NetworkEntity NetworkEntity { get; private set; } = default!;
+
         protected NetworkManager NetworkManager => NetworkEntity.NetworkManager;
-        internal RpcRegistry RpcRegistry { get; } = new();
         protected RpcSender RpcSender { get; private set; } = null!;
+
+        internal RpcRegistry RpcRegistry { get; } = new();
         private RpcHandler RpcHandler => NetworkManager.RpcHandler;
 
-        private NetworkEntity _networkEntity = null!;
-        private NetworkEntity NetworkEntity
-        {
-            get
-            {
-                if (_networkEntity is null)
-                    throw new InvalidOperationException("NetworkScript is not initialized. " +
-                        "Make sure you called base method in your Start method.");
-                return _networkEntity;
-            }
-        }
 
-        public override void Start()
+        public override sealed void Start()
         {
-            _networkEntity = GetNetworkEntity()!;
-            if (_networkEntity is null)
+            NetworkEntity = GetNetworkEntity()!;
+            if (NetworkEntity is null)
                 throw new ArgumentException("NetworkEntity component is not found in this entity and parent entities. Make sure that you added NetworkObject to the entity along with script.");
             
-            // Save index of added script
-            var scriptId = (ushort)RpcHandler.AddScriptAndGetId(this); 
+            var scriptId = (ushort)RpcHandler.AddScript(this); 
 
-            RpcSender = new(RpcRegistry, _networkEntity.NetworkManager, scriptId);
+            RpcSender = new(RpcRegistry, NetworkEntity.NetworkManager, scriptId);
             RegisterRpcs();
             RegisterVaribles();
+
+            NetworkStart();
         }
+
+        public virtual void NetworkStart(){}
 
         /// <summary>
         /// Implemented by Source Generator. It is used to register RPCs.

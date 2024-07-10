@@ -18,9 +18,8 @@ namespace Sample
         [NetworkVariable(SendMode = MessageSendMode.Unreliable)]
         private Vector3 _position;
 
-		public override void Start()
+		public override void NetworkStart()
         {
-            base.Start();
             Log.Info($"NetworkId: {OwnerId}, IsLocalPlayer: {IsOwner}");
         }
 

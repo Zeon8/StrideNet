@@ -21,7 +21,7 @@ namespace StrideNet
             }
         }
 
-        public int AddScriptAndGetId(NetworkScript script)
+        public int AddScript(NetworkScript script)
         {
             int id = _scripts.Count;
             if (!_scripts.Contains(script))
@@ -42,7 +42,7 @@ namespace StrideNet
             _scripts.Remove(script);
         }
 
-        private void HandleRpc(NetworkScript script, Message message)
+        private void InvokeRpc(NetworkScript script, Message message)
         {
             INetworkRpc rpc = script.RpcRegistry.GetRpc(message)
                 ?? throw new Exception("Cannot proccess unregistered RPC.");
@@ -50,9 +50,9 @@ namespace StrideNet
             rpc.Invoke(message);
         }
 
-        private void HandleRpcWithAuthority(NetworkScript script, ushort clientId, Message message)
+        private void InvokeRpcWithAuthority(NetworkScript script, ushort clientId, Message message)
         {
-            INetworkRpc rpc = script.RpcRegistry.GetRpc(message)
+            INetworkRpc rpc = script.RpcRegistry.GetRpc(message) 
                 ?? throw new Exception("Cannot proccess unregistered RPC.");
 
             if (rpc.Mode == RpcMode.Authority && script.OwnerId != clientId)
@@ -70,15 +70,17 @@ namespace StrideNet
 
         public void RpcRecieved(ushort clientId, Message message)
         {
-            if(GetScript(message) is NetworkScript script)
-                HandleRpcWithAuthority(script, clientId, message);
+            if (GetScript(message) is NetworkScript script)
+            {
+                InvokeRpcWithAuthority(script, clientId, message);
+            }
         }
 
         public void RpcRecieved(Message message)
         {
             NetworkScript? script = GetScript(message);
             if (script is not null)
-                HandleRpc(script, message);
+                InvokeRpc(script, message);
         }
     }
 }
