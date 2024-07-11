@@ -11,24 +11,24 @@ namespace Sample
         public NetworkSpawner Spawner { get; init; }
         public Prefab PlayerPrefab { get; init; }
 
-		public override void Start()
-		{
-			NetworkManager.ClientConnectedToServer += NetworkManager_ClientConnectedToServer; ;
-			NetworkManager.ServerStarted += NetworkManager_ServerStarted;
+        public override void Start()
+        {
+            NetworkManager.ClientConnectedToServer += NetworkManager_ClientConnectedToServer; ;
+            NetworkManager.ServerStarted += NetworkManager_ServerStarted;
         }
 
-		private void NetworkManager_ServerStarted(object sender, System.EventArgs e)
-		{
+        private void NetworkManager_ServerStarted(object sender, System.EventArgs e)
+        {
             if(NetworkManager.IsHost)
-			    Spawner.SpawnEntities(PlayerPrefab, 0);
-		}
+                Spawner.SpawnEntities(PlayerPrefab, 0);
+        }
 
-		private void NetworkManager_ClientConnectedToServer(object sender, ServerConnectedEventArgs e)
-		{
+        private void NetworkManager_ClientConnectedToServer(object sender, ServerConnectedEventArgs e)
+        {
             Spawner.SpawnEntities(PlayerPrefab, e.Client.Id);
-		}
+        }
 
-		public override void Update()
+        public override void Update()
         {
             if (Input.IsKeyDown(Stride.Input.Keys.D1))
                 NetworkManager.StartHost();

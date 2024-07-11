@@ -10,15 +10,15 @@ namespace StrideNet
 {
     internal class RpcHandler
     {
+        private readonly RpcRegistry _rpcRegistry;
         private readonly List<NetworkScript> _scripts = new();
+
         private Logger? _log;
-        private Logger Log
+        private Logger Log => _log ??= GlobalLogger.GetLogger(nameof(RpcHandler));
+
+        public RpcHandler(RpcRegistry rpcRegistry)
         {
-            get
-            {
-                _log ??= GlobalLogger.GetLogger(nameof(RpcHandler));
-                return _log;
-            }
+            _rpcRegistry = rpcRegistry;
         }
 
         public int AddScript(NetworkScript script)
@@ -34,6 +34,7 @@ namespace StrideNet
             int scriptId = message.GetInt();
             if (scriptId < _scripts.Count)
                 return _scripts[scriptId];
+
             return null;
         }
 
@@ -44,16 +45,22 @@ namespace StrideNet
 
         private void InvokeRpc(NetworkScript script, Message message)
         {
-            INetworkRpc rpc = script.RpcRegistry.GetRpc(message)
-                ?? throw new Exception("Cannot proccess unregistered RPC.");
+            if (!_rpcRegistry.TryGetRpc(message.GetInt(), out INetworkRpc? rpc))
+            {
+                Log.Error("Cannot proccess unregistered RPC.");
+                return;
+            }
 
-            rpc.Invoke(message);
+            rpc.Invoke(message, script);
         }
 
         private void InvokeRpcWithAuthority(NetworkScript script, ushort clientId, Message message)
         {
-            INetworkRpc rpc = script.RpcRegistry.GetRpc(message) 
-                ?? throw new Exception("Cannot proccess unregistered RPC.");
+            if(!_rpcRegistry.TryGetRpc(message.GetInt(), out INetworkRpc? rpc))
+            {
+                Log.Error("Cannot proccess unregistered RPC.");
+                return;
+            }    
 
             if (rpc.Mode == RpcMode.Authority && script.OwnerId != clientId)
             {
@@ -65,18 +72,16 @@ namespace StrideNet
                 Log.Warning($"The client {clientId} attempted to invoke a RPC allowed only for the server.");
                 return;
             }
-            rpc.Invoke(message);
+            rpc.Invoke(message, script);
         }
 
-        public void RpcRecieved(ushort clientId, Message message)
+        public void HandleRpc(ushort clientId, Message message)
         {
             if (GetScript(message) is NetworkScript script)
-            {
                 InvokeRpcWithAuthority(script, clientId, message);
-            }
         }
 
-        public void RpcRecieved(Message message)
+        public void HandleRpc(Message message)
         {
             NetworkScript? script = GetScript(message);
             if (script is not null)

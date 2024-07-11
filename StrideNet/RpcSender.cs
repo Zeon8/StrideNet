@@ -1,6 +1,7 @@
 ﻿using Riptide;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -36,9 +37,9 @@ namespace StrideNet
         public void CreateRpc(RpcDelegate rpcDelegate, out INetworkRpc? rpc, out Message message)
         {
             if (!_registry.TryGetRpc(rpcDelegate, out rpc, out int rpcId))
-				throw new ArgumentException("Cannot create unregistered RPC.");
+                throw new ArgumentException("Cannot create unregistered RPC.");
 
-			message = CreateMessage(rpcId, rpc!.SendMode);
+            message = CreateMessage(rpcId, rpc.SendMode);
         }
 
         public void SendRpc(INetworkRpc rpc, Message message)

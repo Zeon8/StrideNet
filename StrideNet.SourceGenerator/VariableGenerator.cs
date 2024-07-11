@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -75,12 +76,10 @@ namespace {type.ContainingNamespace}
         private void GenerateProperty(IFieldSymbol field, CodeBuilder builder, AttributeData attribute, 
             string propertyName, string rpcName)
         {
-            string accessModifier = FromEnum(attribute.GetNamedArgumentValue("Modifier"));
-
             string notificationMethod = attribute.NamedArguments
                 .FirstOrDefault(a => a.Key == "NotificationMethod").Value.Value as string;
-           
-            builder.AppendLine(@$"{accessModifier} {field.Type} {propertyName}
+
+            builder.AppendLine(@$"private {field.Type} {propertyName}
 {{
     get => {field.Name};
     set
@@ -92,29 +91,17 @@ namespace {type.ContainingNamespace}
     }}
 }}
 
-private void {rpcName}(Message message)
+private void {rpcName}(Message message, NetworkScript script)
 {{
-    {field.Type} value = message.Get<{field.Type}>();");
+    {field.Type} value = message.Get<{field.Type}>();
+    On{propertyName}Changing({field.Name}, value);
+    {field.Name} = value;
+    On{propertyName}Changed(value);
+}}
 
-            builder.AddTab();
-            if (!string.IsNullOrEmpty(notificationMethod))
-                builder.AppendLine($"{notificationMethod}({field.Name}, value);");
-
-            builder.AppendLine($"{field.Name} = value;");
-            builder.RemoveTab();
-            builder.AppendLine("}");
-        }
-
-        private string FromEnum(string modifier)
-        {
-            return modifier switch
-            {
-                "StrideNet.AccessModifier.Private" => "private",
-                "StrideNet.AccessModifier.Public" => "public",
-                "StrideNet.AccessModifier.Protected" => "protected",
-                "StrideNet.AccessModifier.Internal" => "internal",
-                _ => "private",
-            };
+partial void On{propertyName}Changing({field.Type} oldValue, {field.Type} newValue);
+partial void On{propertyName}Changed({field.Type} value);
+");
         }
     }
 }

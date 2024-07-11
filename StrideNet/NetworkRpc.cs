@@ -3,13 +3,13 @@ using System;
 
 namespace StrideNet
 {
-    public delegate void RpcDelegate(Message message);
+    public delegate void RpcDelegate(Message message, NetworkScript script);
 
     public interface INetworkRpc
     {
         RpcMode Mode { get; }
         MessageSendMode SendMode { get; }
-        void Invoke(Message message);
+        void Invoke(Message message, NetworkScript script);
     }
 
     internal class NetworkRpc : INetworkRpc
@@ -18,7 +18,7 @@ namespace StrideNet
 
         public MessageSendMode SendMode { get; }
 
-		private readonly RpcDelegate _rpc;
+        private readonly RpcDelegate _rpc;
 
         public NetworkRpc(RpcDelegate rpc, RpcMode mode, MessageSendMode sendMode)
         {
@@ -27,6 +27,6 @@ namespace StrideNet
             SendMode = sendMode;
         }
 
-        public void Invoke(Message message) => _rpc(message);
+        public void Invoke(Message message, NetworkScript script) => _rpc(message, script);
     }
 }

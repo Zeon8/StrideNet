@@ -18,7 +18,7 @@ namespace Sample
         [NetworkVariable(SendMode = MessageSendMode.Unreliable)]
         private Vector3 _position;
 
-		public override void NetworkStart()
+        public override void NetworkStart()
         {
             Log.Info($"NetworkId: {OwnerId}, IsLocalPlayer: {IsOwner}");
         }
@@ -41,11 +41,9 @@ namespace Sample
         [NetworkRpc]
         private void UpdatePosition(Vector2 input)
         {
-            DebugText.Print($"Input: {input}", new Int2(15, 15));
             float deltaTime = (float)Game.UpdateTime.Elapsed.TotalSeconds;
             Entity.Transform.Position += Entity.Transform.WorldMatrix.Up * Speed * input.Y * deltaTime;
             Entity.Transform.Position += Entity.Transform.WorldMatrix.Right * Speed * input.X * deltaTime;
-
             Position = Entity.Transform.Position;
         }
     }

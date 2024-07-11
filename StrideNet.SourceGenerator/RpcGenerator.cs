@@ -72,15 +72,16 @@ namespace {type.ContainingNamespace}
 
         private static void GenerateCallWrapper(IMethodSymbol symbol, CodeBuilder builder)
         {
-            string methodName = GetCallMethodName(symbol.Name);
-            builder.AppendLine($"private void {methodName}(Message message)");
+            string methodName = symbol.Name;
+            string callMethodName = GetCallMethodName(methodName);
+            builder.AppendLine($"private static void {callMethodName}(Message message, NetworkScript script)");
             builder.AppendLine("{");
             builder.AddTab();
             foreach (var param in symbol.Parameters)
                 builder.AppendLine($"{param.Type} {param.Name} = message.Get<{param.Type}>();");
             
             string argumentList = string.Join(",", symbol.Parameters.Select(p => p.Name));
-            builder.AppendLine($"{symbol.Name}({argumentList});");
+            builder.AppendLine($"(({symbol.ContainingType.Name})script).{methodName}({argumentList});");
             builder.RemoveTab();
             builder.AppendLine("}");
             builder.AppendLine();
@@ -113,7 +114,7 @@ namespace {type.ContainingNamespace}
 
 			if (rpcMode is null || rpcMode == "StrideNet.RpcMode.Authority")
 			{
-				builder.AppendLine("if(IsServer)");
+				builder.AppendLine(@"if(IsServer)");
 				builder.AppendLine("{");
 				builder.AddTab();
 				GenerateMethodCall();

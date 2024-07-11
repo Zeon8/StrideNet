@@ -28,19 +28,15 @@ namespace StrideNet
         protected NetworkManager NetworkManager => NetworkEntity.NetworkManager;
         protected RpcSender RpcSender { get; private set; } = null!;
 
-        internal RpcRegistry RpcRegistry { get; } = new();
-        private RpcHandler RpcHandler => NetworkManager.RpcHandler;
-
-
         public override sealed void Start()
         {
             NetworkEntity = GetNetworkEntity()!;
             if (NetworkEntity is null)
                 throw new ArgumentException("NetworkEntity component is not found in this entity and parent entities. Make sure that you added NetworkObject to the entity along with script.");
             
-            var scriptId = (ushort)RpcHandler.AddScript(this); 
+            var scriptId = (ushort)NetworkManager.RpcHandler.AddScript(this); 
 
-            RpcSender = new(RpcRegistry, NetworkEntity.NetworkManager, scriptId);
+            RpcSender = new(NetworkManager.RpcRegistry, NetworkEntity.NetworkManager, scriptId);
             RegisterRpcs();
             RegisterVaribles();
 
@@ -73,12 +69,12 @@ namespace StrideNet
 
         public override void Cancel()
         {
-            RpcHandler.RemoveScript(this);
+            NetworkManager.RpcHandler.RemoveScript(this);
         }
 
         protected void RegisterRpc(RpcDelegate rpc, RpcMode mode, MessageSendMode sendMode)
         {
-            RpcRegistry.AddRpc(rpc, new NetworkRpc(rpc, mode, sendMode));
+            NetworkManager.RpcRegistry.AddRpc(rpc, new NetworkRpc(rpc, mode, sendMode));
         }
     }
 }

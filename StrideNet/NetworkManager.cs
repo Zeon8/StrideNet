@@ -18,7 +18,9 @@ namespace StrideNet
         public bool IsClient => _peer is Client;
 
         internal ushort NetworkId { get; private set; } = 0;
-        internal RpcHandler RpcHandler { get; } = new();
+
+        internal RpcHandler RpcHandler { get; private set; } = default!;
+        internal RpcRegistry RpcRegistry { get; } = new();
 
         /// <summary>
         /// Called when server successfuly started.
@@ -57,8 +59,9 @@ namespace StrideNet
             RiptideLogger.Initialize(str => Log.Debug(str), str => Log.Info(str),
                 str => Log.Warning(str), str => Log.Error(str), true);
 
-            AddServerHandler((ushort)ServerNetworkMessages.Rpc, RpcHandler.RpcRecieved);
-            AddClientHandler((ushort)ClientNetworkMessages.Rpc, RpcHandler.RpcRecieved);
+            RpcHandler = new(RpcRegistry);
+            AddServerHandler((ushort)ServerNetworkMessages.Rpc, RpcHandler.HandleRpc);
+            AddClientHandler((ushort)ClientNetworkMessages.Rpc, RpcHandler.HandleRpc);
         }
 
         /// <summary>
