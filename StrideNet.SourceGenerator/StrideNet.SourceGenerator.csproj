@@ -7,7 +7,7 @@
     <IsRoslynComponent>true</IsRoslynComponent>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <Title>StrideNet.SourceGenerator</Title>
-    <Authors>Zeon4</Authors>
+    <Authors>Zeon8</Authors>
     <Description>Source generator for StrideNet library.</Description>
     <PackageProjectUrl>https://github.com/Zeon8/StrideNet</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Zeon8/StrideNet</RepositoryUrl>

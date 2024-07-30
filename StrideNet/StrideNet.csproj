@@ -4,7 +4,7 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>StrideNet</Title>
-    <Authors>Zeon4</Authors>
+    <Authors>Zeon8</Authors>
     <Description>Network library for Stride Game Engine.</Description>
     <PackageProjectUrl>https://github.com/Zeon8/StrideNet</PackageProjectUrl>
     <FileVersion></FileVersion>
