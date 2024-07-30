@@ -6,8 +6,20 @@
     <LangVersion>latest</LangVersion>
     <IsRoslynComponent>true</IsRoslynComponent>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <Title>StrideNet.SourceGenerator</Title>
+    <Authors>Zeon4</Authors>
+    <Description>Source generator for StrideNet library.</Description>
+    <PackageProjectUrl>https://github.com/Zeon8/StrideNet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Zeon8/StrideNet</RepositoryUrl>
+    <Version>1.0.0</Version>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+  </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
