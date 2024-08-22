@@ -56,7 +56,6 @@ namespace {type.ContainingNamespace}
 }}";
                 context.AddSource($"{type.Name}.g.cs", code);
             }
-
         }
 
         private void GenerateProperty(IFieldSymbol field, CodeBuilder builder, CodeBuilder registerBuilder)
@@ -64,30 +63,30 @@ namespace {type.ContainingNamespace}
             var attribute = field.GetAttributes()
                 .First(a => a.AttributeClass.ToString() == AttributeName);
 
-            string propertyName = field.Name.Replace("_", "");
+            string propertyName = field.Name;
+            if (propertyName[0] == '_')
+                propertyName = propertyName.Substring(1);
+
             propertyName = propertyName[0].ToString().ToUpper() + propertyName.Substring(1);
             string sendMode = attribute.GetNamedArgumentValue("SendMode") ?? "MessageSendMode.Reliable";
-            string rpcName = $"Set{propertyName}Rpc";
+            string rpcName = $"__Set{propertyName}Rpc";
 
-            registerBuilder.AppendLine($"RegisterRpc({rpcName}, RpcMode.ServerAuthority, {sendMode});");
-            GenerateProperty(field, builder, attribute, propertyName, rpcName);
+            registerBuilder.AppendLine($"RegisterRpc({rpcName}, NetworkAuthority.ServerAuthority, {sendMode});");
+            GeneratePropertyAndMethods(field, builder, attribute, propertyName, rpcName);
         }
 
-        private void GenerateProperty(IFieldSymbol field, CodeBuilder builder, AttributeData attribute, 
+        private void GeneratePropertyAndMethods(IFieldSymbol field, CodeBuilder builder, AttributeData attribute, 
             string propertyName, string rpcName)
         {
-            string notificationMethod = attribute.NamedArguments
-                .FirstOrDefault(a => a.Key == "NotificationMethod").Value.Value as string;
-
             builder.AppendLine(@$"private {field.Type} {propertyName}
 {{
     get => {field.Name};
     set
     {{
         {field.Name} = value;
-        RpcSender.CreateRpc({rpcName}, out INetworkRpc rpc, out Message message);
+        Message message = RpcSender.CreateRpcMessage({rpcName});
         message.Add(value);
-        RpcSender.SendRpc(rpc, message);
+        RpcSender.SendRpcMessage(message);
     }}
 }}
 

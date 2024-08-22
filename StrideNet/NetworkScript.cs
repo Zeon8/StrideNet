@@ -2,6 +2,7 @@
 using Stride.Engine;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace StrideNet
 {
@@ -19,15 +20,31 @@ namespace StrideNet
         /// <inheritdoc cref="NetworkEntity.OwnerId"/>
         public ushort OwnerId => NetworkEntity.OwnerId;
 
+        /// <inheritdoc cref="NetworkManager.IsServer"/>
         public bool IsServer => NetworkManager.IsServer;
+
+        /// <inheritdoc cref="NetworkManager.IsServer"/>
         public bool IsClient => NetworkManager.IsClient;
+
+        /// <inheritdoc cref="NetworkManager.IsServer"/>
         public bool IsHost => NetworkManager.IsHost;
 
+        /// <summary>
+        /// Gets <see cref="StrideNet.NetworkEntity"/> component of this entity.
+        /// </summary>
         public NetworkEntity NetworkEntity { get; private set; } = default!;
 
+        /// <summary>
+        /// Gets <see cref="StrideNet.NetworkManager"/> instance.
+        /// </summary>
         protected NetworkManager NetworkManager => NetworkEntity.NetworkManager;
+
+        /// <summary>
+        /// Gets a RpcSender.
+        /// </summary>
         protected RpcSender RpcSender { get; private set; } = null!;
 
+        /// <inheritdoc/>
         public override sealed void Start()
         {
             NetworkEntity = GetNetworkEntity()!;
@@ -43,15 +60,18 @@ namespace StrideNet
             NetworkStart();
         }
 
+        /// <summary>
+        /// Called after script initialization.
+        /// </summary>
         public virtual void NetworkStart(){}
 
         /// <summary>
-        /// Implemented by Source Generator. It is used to register RPCs.
+        /// Implemented by Source Generator. Used for registering RPCs.
         /// </summary>
         protected virtual void RegisterRpcs() { }
 
         /// <summary>
-        /// Implemented by Source Generator. It is used to register network varibles.
+        /// Implemented by Source Generator. Used for registering network varibles.
         /// </summary>
         protected virtual void RegisterVaribles() { }
 
@@ -67,14 +87,21 @@ namespace StrideNet
             return networkEntity;
         }
 
+        /// <inheritdoc/>
         public override void Cancel()
         {
             NetworkManager.RpcHandler.RemoveScript(this);
         }
 
-        protected void RegisterRpc(RpcDelegate rpc, RpcMode mode, MessageSendMode sendMode)
+        /// <summary>
+        /// Adds RPC to registry.
+        /// </summary>
+        /// <param name="rpc">RPC method</param>
+        /// <param name="authority">RPC call authority</param>
+        /// <param name="sendMode">Send mode</param>
+        protected void RegisterRpc(RpcDelegate rpc, NetworkAuthority authority, MessageSendMode sendMode)
         {
-            NetworkManager.RpcRegistry.AddRpc(rpc, new NetworkRpc(rpc, mode, sendMode));
+            NetworkManager.RpcRegistry.AddRpc(rpc, new NetworkRpc(rpc, authority, sendMode));
         }
     }
 }

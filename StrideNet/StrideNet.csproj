@@ -14,7 +14,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="StrideNet.SourceGenerator" Version="1.0.0" />
+    <!--<PackageReference Include="StrideNet.SourceGenerator" Version="1.0.0" />-->
     <PackageReference Include="MemoryPack" Version="1.10.0" />
     <PackageReference Include="RiptideNetworking.Riptide" Version="2.1.2" />
     <PackageReference Include="Stride.Engine" Version="4.2.0.2149" PrivateAssets="contentfiles;analyzers" />

@@ -7,19 +7,19 @@ using System.Threading.Tasks;
 namespace StrideNet
 {
     /// <summary>
-    /// Call mode of RPC method.
+    /// RPC call authority.
     /// </summary>
-    public enum RpcMode
+    public enum NetworkAuthority
     {
         /// <summary>
         /// Any peer can call the PRC.
         /// </summary>
-        AnyPeer,
+        NoAuthority,
 
         /// <summary>
         /// Only peer that owns entity can call the RPC on the server.
         /// </summary>
-        Authority,
+        OwnerAuthority,
 
         /// <summary>
         /// Only server can call the RPC on the peers.

@@ -43,7 +43,7 @@ namespace StrideNet
             _scripts.Remove(script);
         }
 
-        private void InvokeRpc(NetworkScript script, Message message)
+        private void CallRpc(NetworkScript script, Message message)
         {
             if (!_rpcRegistry.TryGetRpc(message.GetInt(), out INetworkRpc? rpc))
             {
@@ -51,41 +51,42 @@ namespace StrideNet
                 return;
             }
 
-            rpc.Invoke(message, script);
+            rpc.Call(message, script);
         }
 
-        private void InvokeRpcWithAuthority(NetworkScript script, ushort clientId, Message message)
+        private void CallRpcWithAuthority(NetworkScript script, ushort clientId, Message message)
         {
-            if(!_rpcRegistry.TryGetRpc(message.GetInt(), out INetworkRpc? rpc))
+            int id = message.GetInt();
+            if (!_rpcRegistry.TryGetRpc(id, out INetworkRpc? rpc))
             {
-                Log.Error("Cannot proccess unregistered RPC.");
+                Log.Error($"Received unknow RPC: {id}.");
                 return;
             }    
 
-            if (rpc.Mode == RpcMode.Authority && script.OwnerId != clientId)
+            if (rpc.Mode == NetworkAuthority.OwnerAuthority && script.OwnerId != clientId)
             {
                 Log.Warning($"RPC sent from client {clientId} that doesn't have authority on network object {script.OwnerId} won't be proceded.");
                 return;
             }
-            else if (rpc.Mode == RpcMode.ServerAuthority)
+            else if (rpc.Mode == NetworkAuthority.ServerAuthority)
             {
-                Log.Warning($"The client {clientId} attempted to invoke a RPC allowed only for the server.");
+                Log.Warning($"The client {clientId} attempted to invoke a server authoritative RPC.");
                 return;
             }
-            rpc.Invoke(message, script);
+            rpc.Call(message, script);
         }
 
         public void HandleRpc(ushort clientId, Message message)
         {
             if (GetScript(message) is NetworkScript script)
-                InvokeRpcWithAuthority(script, clientId, message);
+                CallRpcWithAuthority(script, clientId, message);
         }
 
         public void HandleRpc(Message message)
         {
             NetworkScript? script = GetScript(message);
             if (script is not null)
-                InvokeRpc(script, message);
+                CallRpc(script, message);
         }
     }
 }

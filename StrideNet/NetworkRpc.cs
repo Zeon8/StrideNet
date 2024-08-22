@@ -3,30 +3,35 @@ using System;
 
 namespace StrideNet
 {
+    /// <summary>
+    /// Delegate for calling coresponding RPC method.
+    /// </summary>
+    /// <param name="message">Received message.</param>
+    /// <param name="script">Network script of RPC method.</param>
     public delegate void RpcDelegate(Message message, NetworkScript script);
 
-    public interface INetworkRpc
+    internal interface INetworkRpc
     {
-        RpcMode Mode { get; }
+        NetworkAuthority Mode { get; }
         MessageSendMode SendMode { get; }
-        void Invoke(Message message, NetworkScript script);
+        void Call(Message message, NetworkScript script);
     }
 
     internal class NetworkRpc : INetworkRpc
     {
-        public RpcMode Mode { get; }
+        public NetworkAuthority Mode { get; }
 
         public MessageSendMode SendMode { get; }
 
         private readonly RpcDelegate _rpc;
 
-        public NetworkRpc(RpcDelegate rpc, RpcMode mode, MessageSendMode sendMode)
+        public NetworkRpc(RpcDelegate rpc, NetworkAuthority mode, MessageSendMode sendMode)
         {
             _rpc = rpc;
             Mode = mode;
             SendMode = sendMode;
         }
 
-        public void Invoke(Message message, NetworkScript script) => _rpc(message, script);
+        public void Call(Message message, NetworkScript script) => _rpc(message, script);
     }
 }

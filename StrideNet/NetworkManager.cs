@@ -6,15 +6,40 @@ using System.Collections.Generic;
 
 namespace StrideNet
 {
+    /// <summary>
+    /// Handles network connection and synchronization.
+    /// </summary>
     [ComponentCategory("Network")]
     public class NetworkManager : SyncScript
     {
+        /// <summary>
+        /// Gets server adress..
+        /// </summary>
         public string Adress { get; init; } = "127.0.0.1";
+
+        /// <summary>
+        /// Gets or sets server port.
+        /// </summary>
         public ushort Port { get; init; } = 3000;
+
+        /// <summary>
+        /// Gets or sets maximum player count.
+        /// </summary>
         public ushort MaxPlayersCount { get; init; }
 
+        /// <summary>
+        /// Gets whether NetworkManager currently is host.
+        /// </summary>
         public bool IsHost { get; private set; }
+
+        /// <summary>
+        /// Gets whether NetworkManager is server.
+        /// </summary>
         public bool IsServer => _peer is Server;
+
+        /// <summary>
+        /// Gets whether NetworkManager is client.
+        /// </summary>
         public bool IsClient => _peer is Client;
 
         internal ushort NetworkId { get; private set; } = 0;
@@ -54,6 +79,7 @@ namespace StrideNet
         private Dictionary<ushort, Server.MessageHandler> _serverMessageHandlers = new();
         private Dictionary<ushort, Client.MessageHandler> _clientMessageHandlers = new();
 
+        /// <inheritdoc/>
         public override void Start()
         {
             RiptideLogger.Initialize(str => Log.Debug(str), str => Log.Info(str),
@@ -156,6 +182,7 @@ namespace StrideNet
             NetworkId = client.Id;
         }
 
+        /// <inheritdoc/>
         public override void Update()
         {
             _peer?.Update();
@@ -181,7 +208,8 @@ namespace StrideNet
             }
         }
 
-        public void AddServerHandler(ushort id, Server.MessageHandler handler)
+
+        internal void AddServerHandler(ushort id, Server.MessageHandler handler)
         {
             if (_serverMessageHandlers.ContainsKey(id))
                 throw new ArgumentException("Cannot add handler, because handler with same id was already added.");

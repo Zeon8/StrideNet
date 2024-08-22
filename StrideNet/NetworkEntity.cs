@@ -3,11 +3,14 @@ using Stride.Engine;
 
 namespace StrideNet
 {
+    /// <summary>
+    /// Representation of entity in network.
+    /// </summary>
     [ComponentCategory("Network")]
     public class NetworkEntity : StartupScript
     {
         /// <summary>
-        /// Network identifier for network entity. Determines ownership over entity.
+        /// Gets the network entity owner identifier. 
         /// </summary>
         [DataMemberIgnore]
         public ushort OwnerId { get; private set; }
