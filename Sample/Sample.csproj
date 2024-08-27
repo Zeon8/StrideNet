@@ -5,13 +5,13 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MemoryPack" Version="1.10.0" />
-    <PackageReference Include="Stride.Engine" Version="4.2.0.2149" />
-    <PackageReference Include="Stride.Video" Version="4.2.0.2149" />
-    <PackageReference Include="Stride.Physics" Version="4.2.0.2149" />
-    <PackageReference Include="Stride.Navigation" Version="4.2.0.2149" />
-    <PackageReference Include="Stride.Particles" Version="4.2.0.2149" />
-    <PackageReference Include="Stride.UI" Version="4.2.0.2149" />
-    <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.2.0.2149" IncludeAssets="build;buildTransitive" />
+    <PackageReference Include="Stride.Engine" Version="4.2.0.2188" />
+    <PackageReference Include="Stride.Video" Version="4.2.0.2188" />
+    <PackageReference Include="Stride.Physics" Version="4.2.0.2188" />
+    <PackageReference Include="Stride.Navigation" Version="4.2.0.2188" />
+    <PackageReference Include="Stride.Particles" Version="4.2.0.2188" />
+    <PackageReference Include="Stride.UI" Version="4.2.0.2188" />
+    <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.2.0.2188" IncludeAssets="build;buildTransitive" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StrideNet\StrideNet.csproj" />
