@@ -1,20 +1,27 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>StrideNet</Title>
-    <Authors>Zeon8</Authors>
+    <Authors>Zeon4</Authors>
     <Description>Network library for Stride Game Engine.</Description>
     <PackageProjectUrl>https://github.com/Zeon8/StrideNet</PackageProjectUrl>
-    <FileVersion></FileVersion>
-    <Version>1.0.0</Version>
+    <Version>0.1.1</Version>
     <RepositoryUrl>https://github.com/Zeon8/StrideNet</RepositoryUrl>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <FileVersion>$(Version)</FileVersion>
   </PropertyGroup>
   <ItemGroup>
-    <!--<PackageReference Include="StrideNet.SourceGenerator" Version="1.0.0" />-->
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="StrideNet.SourceGenerator" Version="0.1.1" />
     <PackageReference Include="MemoryPack" Version="1.10.0" />
     <PackageReference Include="RiptideNetworking.Riptide" Version="2.1.2" />
     <PackageReference Include="Stride.Engine" Version="4.2.0.2188" PrivateAssets="contentfiles;analyzers" />
