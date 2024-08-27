@@ -9,47 +9,42 @@ namespace StrideNet.SourceGenerator
         private StringBuilder _builder = new StringBuilder();
 
         private const int TabLength = 4;
-        private int _spacesCount = 0;
+        private int _indentionLevel = 1;
+        private string CurrentIndention => new(' ', _indentionLevel * TabLength);
 
         public CodeBuilder(){}
-        public CodeBuilder(int tabLevel)
+
+        public CodeBuilder(int indentionLevel) => _indentionLevel = indentionLevel;
+
+        public void Append(string value) => _builder.Append(PreAppendIndetion(value));
+
+        public void AppendLine() => _builder.AppendLine();
+
+        public void AppendLine(string value) => _builder.AppendLine(PreAppendIndetion(value));
+
+        public void AppendBlock(string value)
         {
-            _spacesCount = tabLevel * TabLength;
+            IncreaseIndention();
+            AppendLine(value);
+            DecreaseIndention();
         }
 
-        private string CurrentIndention => new(' ', _spacesCount);
-
-        public void Append(string value) => _builder.Append(AddIndention(value));
-
-        public void AppendLine(string value) => _builder.AppendLine(AddIndention(value));
-        public void AppendLineWidthTab(string value)
-        {
-            AddTab();
-            _builder.AppendLine(AddIndention(value));
-            RemoveTab();
-        }
-
-        private string AddIndention(string value)
+        private string PreAppendIndetion(string value)
         {
             return CurrentIndention + value.Replace("\n", "\n" + CurrentIndention);
         }
 
-        public void AppendLine() => _builder.AppendLine();
-
-        public void AddTab()
+        public void IncreaseIndention()
         {
-            _spacesCount += TabLength;
+            _indentionLevel++;
         }
 
-        public void RemoveTab()
+        public void DecreaseIndention()
         {
-            if(_spacesCount >= TabLength)
-                _spacesCount -= TabLength;
+            if(_indentionLevel > 1)
+                _indentionLevel--;
         }
 
-        public override string ToString()
-        {
-            return _builder.ToString();
-        }
+        public override string ToString() => _builder.ToString();
     }
 }

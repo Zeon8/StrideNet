@@ -52,13 +52,12 @@ namespace {type.ContainingNamespace}
 {{
     public partial class {type.Name} : {type.BaseType} 
     {{
+{wrappersBuilder}
+
         protected override void RegisterRpcs()
         {{
-            base.RegisterRpcs();
-{registersBuilder}
+            base.RegisterRpcs();{registersBuilder}
         }}
-
-{wrappersBuilder}
     }}
 }}";
                 context.AddSource($"{type.Name}.g.cs", code);
@@ -70,7 +69,8 @@ namespace {type.ContainingNamespace}
         {
             string rpcAuthority = attribute.GetNamedArgumentValue("Authority") ?? "NetworkAuthority.OwnerAuthority";
             string sendMode = attribute.GetNamedArgumentValue("SendMode") ?? "MessageSendMode.Reliable";
-            builder.AppendLine(@$"RegisterRpc({methodName}, {rpcAuthority}, {sendMode});");
+            builder.AppendLine();
+            builder.Append(@$"RegisterRpc({methodName}, {rpcAuthority}, {sendMode});");
         }
 
         private static void GenerateCallWrapper(IMethodSymbol symbol, CodeBuilder builder)
@@ -79,13 +79,13 @@ namespace {type.ContainingNamespace}
             string callMethodName = GetCallMethodName(methodName);
             builder.AppendLine($"private static void {callMethodName}(Message message, NetworkScript script)");
             builder.AppendLine("{");
-            builder.AddTab();
+            builder.IncreaseIndention();
             foreach (var param in symbol.Parameters)
                 builder.AppendLine($"{param.Type} {param.Name} = message.Get<{param.Type}>();");
             
             string argumentList = string.Join(",", symbol.Parameters.Select(p => p.Name));
             builder.AppendLine($"(({symbol.ContainingType.Name})script).{methodName}({argumentList});");
-            builder.RemoveTab();
+            builder.DecreaseIndention();
             builder.AppendLine("}");
             builder.AppendLine();
 
@@ -94,33 +94,53 @@ namespace {type.ContainingNamespace}
         private static void GenerateSendWrapper(MethodDeclarationSyntax syntax, IMethodSymbol symbol,
             AttributeData attribute, CodeBuilder builder)
 		{
-			string paramsList = string.Join(", ", symbol.Parameters.Select(p => $"{p.Type} {p.Name}"));
 			string rpcMethodName = symbol.Name + "Rpc";
-			var callMethodName = GetCallMethodName(symbol.Name);
+			string methodParameters = string.Join(", ", 
+                symbol.Parameters.Select(p => $"{p.Type} {p.Name}"));
 
-			builder.AppendLine($"{syntax.Modifiers} {symbol.ReturnType} {rpcMethodName}({paramsList})");
+            var rpcAuthority = attribute.GetNamedArgumentValue("Authority")
+                ?? "StrideNet.NetworkAuthority.OwnerAuthority";
+
+            string arguments = string.Join(", ", symbol.Parameters.Select(p => p.Name));
+            string originalMethodCall = $"{symbol.Name}({arguments});";
+
+            var callMethodName = GetCallMethodName(symbol.Name);
+
+			builder.AppendLine($"{syntax.Modifiers} {symbol.ReturnType} {rpcMethodName}({methodParameters})");
 			builder.AppendLine("{");
-			builder.AddTab();
+			builder.IncreaseIndention();
 
-			var rpcAuthority = attribute.GetNamedArgumentValue("Authority") ?? "StrideNet.NetworkAuthority.OwnerAuthority";
-			if (rpcAuthority == "StrideNet.RpcMode.ServerAuthority")
-			{
-				builder.AppendLine("if(IsClient) return;");
+            if (rpcAuthority == "StrideNet.NetworkAuthority.ServerAuthority")
+            {
+                builder.AppendLine(originalMethodCall);
+                builder.AppendLine(@"if (IsClient)");
+                builder.AppendBlock(@"RpcExceptions.ThrowCalledServerAuthorative();");
             }
-            builder.AppendLine(GenerateOriginalMethodCall());
+            else
+            {
+                builder.AppendLine(@$"if (IsServer)
+{{
+    {originalMethodCall}
+    if(IsOwner)
+        return;
+}}");
 
-			builder.AppendLine($"Message message = RpcSender.CreateRpcMessage({callMethodName});");
+                if (rpcAuthority == "StrideNet.NetworkAuthority.OwnerAuthority")
+                {
+                    builder.AppendLine("else if (!IsOwner)");
+                    builder.AppendBlock("RpcExceptions.ThrowCalledForeignEntity();");
+                    
+                }
+                builder.AppendLine();
+            }
+
+            builder.AppendLine($"Message message = RpcSender.CreateRpcMessage({callMethodName});");
             foreach (var param in symbol.Parameters)
                 builder.AppendLine($"message.Add({param.Name});");
 			builder.AppendLine($"RpcSender.SendRpcMessage(message);");
-			builder.RemoveTab();
+			builder.DecreaseIndention();
 			builder.AppendLine("}");
 
-            string GenerateOriginalMethodCall()
-            {
-                string argumentList = string.Join(",", symbol.Parameters.Select(p => p.Name));
-                return $"{symbol.Name}({argumentList});";
-            }
 
         }
 

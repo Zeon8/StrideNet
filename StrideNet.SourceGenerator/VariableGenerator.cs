@@ -49,8 +49,7 @@ namespace {type.ContainingNamespace}
 {builder}
         protected override void RegisterVaribles()
         {{
-            base.RegisterVaribles();
-{registerBuilder}
+            base.RegisterVaribles();{registerBuilder}
         }}
     }}
 }}";
@@ -71,7 +70,8 @@ namespace {type.ContainingNamespace}
             string sendMode = attribute.GetNamedArgumentValue("SendMode") ?? "MessageSendMode.Reliable";
             string rpcName = $"__Set{propertyName}Rpc";
 
-            registerBuilder.AppendLine($"RegisterRpc({rpcName}, NetworkAuthority.ServerAuthority, {sendMode});");
+            registerBuilder.AppendLine();
+            registerBuilder.Append($"RegisterRpc({rpcName}, NetworkAuthority.ServerAuthority, {sendMode});");
             GeneratePropertyAndMethods(field, builder, attribute, propertyName, rpcName);
         }
 
@@ -83,6 +83,8 @@ namespace {type.ContainingNamespace}
     get => {field.Name};
     set
     {{
+        if(IsClient)
+            RpcExceptions.ThrowSettingVaribleFromClient();
         {field.Name} = value;
         Message message = RpcSender.CreateRpcMessage({rpcName});
         message.Add(value);

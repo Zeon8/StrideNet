@@ -10,10 +10,26 @@ namespace StrideNet
     /// <param name="script">Network script of RPC method.</param>
     public delegate void RpcDelegate(Message message, NetworkScript script);
 
-    internal interface INetworkRpc
+    /// <summary>
+    /// Network RPC instance. 
+    /// </summary>
+    public interface INetworkRpc
     {
+        /// <summary>
+        /// RPC call authority.
+        /// </summary>
         NetworkAuthority Mode { get; }
+
+        /// <summary>
+        /// RPC send mode.
+        /// </summary>
         MessageSendMode SendMode { get; }
+
+        /// <summary>
+        /// Call received RPC with message.
+        /// </summary>
+        /// <param name="message">Received network message.</param>
+        /// <param name="script">Script instance for RPC method.</param>
         void Call(Message message, NetworkScript script);
     }
 

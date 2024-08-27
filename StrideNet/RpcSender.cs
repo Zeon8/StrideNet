@@ -41,7 +41,7 @@ namespace StrideNet
         public Message CreateRpcMessage(RpcDelegate rpcDelegate)
         {
             if (!_registry.TryGetRpc(rpcDelegate, out INetworkRpc? rpc, out int rpcId))
-                throw new ArgumentException("Cannot create unregistered RPC.");
+                throw new ArgumentException("Cannot create message for unregistered RPC.");
 
             return CreateRpcMessage(rpcId, rpc.SendMode);
         }
@@ -50,6 +50,9 @@ namespace StrideNet
         /// Sends RPC message over network.
         /// </summary>
         /// <param name="message">Message to send</param>
-        public void SendRpcMessage(Message message) => _networkManager.Send(message);
+        public void SendRpcMessage(Message message)
+        {
+            _networkManager.Send(message);
+        }
     }
 }

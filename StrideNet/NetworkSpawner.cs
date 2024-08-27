@@ -85,20 +85,20 @@ namespace StrideNet
 
         #region Spawning
         /// <summary>
-        /// Spawns entity on peers by prefab. 
+        /// Spawns entity on all peers from prefab. 
         /// Prefab should be present in <see cref="SpawnablePrefabs"/> collection to be spawned.
         /// </summary>
         /// <param name="prefab">Prefab that contains network entities to spawn</param>
         /// <param name="ownerId">Identificator of the peer that will have ownership over this entity.</param>
         /// <exception cref="ArgumentException">Prefab is not present in <see cref="SpawnablePrefabs"/> collection</exception>
-        public List<Entity> SpawnEntities(Prefab prefab, ushort ownerId)
+        public List<Entity> SpawnEntity(Prefab prefab, ushort ownerId)
         {
             int prefabId = SpawnablePrefabs.IndexOf(prefab);
             if (prefabId == -1)
                 throw new ArgumentException("Cannot spawn entity that is not present in SpawnablePrefabs collection.");
 
             _networkManager.Send(CreateSpawnMessage((ushort)prefabId, ownerId));
-            return InstantiateEntities(prefab, (ushort)prefabId, ownerId);
+            return InstantiateEntity(prefab, (ushort)prefabId, ownerId);
         }
 
         private void InstantiatePrefab(ushort prefabId, ushort ownerId)
@@ -116,10 +116,10 @@ namespace StrideNet
             }
 
             Log.Info($"Spawning prefab {prefabId} with id: {ownerId}");
-            InstantiateEntities(prefab, prefabId, ownerId);
+            InstantiateEntity(prefab, prefabId, ownerId);
         }
 
-        private List<Entity> InstantiateEntities(Prefab prefab, ushort prefabId, ushort ownerId)
+        private List<Entity> InstantiateEntity(Prefab prefab, ushort prefabId, ushort ownerId)
         {
             List<Entity> entities = prefab.Instantiate();
             foreach (var entity in entities)

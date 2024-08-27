@@ -20,12 +20,12 @@ namespace Sample
         private void NetworkManager_ServerStarted(object sender, System.EventArgs e)
         {
             if(NetworkManager.IsHost)
-                Spawner.SpawnEntities(PlayerPrefab, 0);
+                Spawner.SpawnEntity(PlayerPrefab, 0);
         }
 
         private void NetworkManager_ClientConnectedToServer(object sender, ServerConnectedEventArgs e)
         {
-            Spawner.SpawnEntities(PlayerPrefab, e.Client.Id);
+            Spawner.SpawnEntity(PlayerPrefab, e.Client.Id);
         }
 
         public override void Update()
