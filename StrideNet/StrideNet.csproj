@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <Nullable>enable</Nullable>
@@ -24,13 +24,6 @@
     <PackageReference Include="StrideNet.SourceGenerator" Version="0.1.1" />
     <PackageReference Include="MemoryPack" Version="1.10.0" />
     <PackageReference Include="RiptideNetworking.Riptide" Version="2.1.2" />
-    <PackageReference Include="Stride.Engine" Version="4.2.0.2188" PrivateAssets="contentfiles;analyzers" />
-    <PackageReference Include="Stride.Video" Version="4.2.0.2188" PrivateAssets="contentfiles;analyzers" />
-    <PackageReference Include="Stride.Physics" Version="4.2.0.2188" PrivateAssets="contentfiles;analyzers" />
-    <PackageReference Include="Stride.Navigation" Version="4.2.0.2188" PrivateAssets="contentfiles;analyzers" />
-    <PackageReference Include="Stride.Particles" Version="4.2.0.2188" PrivateAssets="contentfiles;analyzers" />
-    <PackageReference Include="Stride.UI" Version="4.2.0.2188" PrivateAssets="contentfiles;analyzers" />
-    <PackageReference Include="Stride.Core" Version="4.2.0.2188" PrivateAssets="contentfiles;analyzers" />
-    <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.2.0.2188" PrivateAssets="contentfiles;analyzers" IncludeAssets="build" />
+    <PackageReference Include="Stride.Engine" Version="4.2.0.2188" />
   </ItemGroup>
 </Project>

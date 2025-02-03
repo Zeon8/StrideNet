@@ -15,6 +15,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StrideNet\StrideNet.csproj" />
-    <ProjectReference Include="..\StrideNet.SourceGenerator\StrideNet.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 </Project>
