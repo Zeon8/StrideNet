@@ -15,12 +15,12 @@ namespace StrideNet
         /// <summary>
         /// Gets server adress..
         /// </summary>
-        public string Adress { get; init; } = "127.0.0.1";
+        public string Adress { get; set; } = "127.0.0.1";
 
         /// <summary>
         /// Gets or sets server port.
         /// </summary>
-        public ushort Port { get; init; } = 3000;
+        public ushort Port { get; set; } = 3000;
 
         /// <summary>
         /// Gets or sets maximum player count.
@@ -98,7 +98,7 @@ namespace StrideNet
             var server = new Server();
             _peer = server;
 
-            server.Start(Port, MaxPlayersCount,0, false);
+            server.Start(Port, MaxPlayersCount, messageHandlerGroupId: 0, useMessageHandlers: false);
             server.ClientConnected += Server_ClientConnected;
             server.ClientDisconnected += Server_ClientDisconnected;
             server.MessageReceived += Server_MessageReceived;
@@ -111,7 +111,7 @@ namespace StrideNet
         {
             if(_serverMessageHandlers.TryGetValue(e.MessageId, out Server.MessageHandler? handler))
             {
-                handler?.Invoke(e.FromConnection.Id, e.Message);
+                handler.Invoke(e.FromConnection.Id, e.Message);
             }
         }
 
@@ -145,7 +145,8 @@ namespace StrideNet
             _peer = client;
 
             client.Connected += Client_Connected;
-            client.Connect(Adress + ':' + Port, 5, 0, messsage, false);
+            client.Connect(Adress + ':' + Port, maxConnectionAttempts: 5, 
+                messageHandlerGroupId: 0, messsage, useMessageHandlers: false);
             client.MessageReceived += Client_MessageReceived;
         }
 
